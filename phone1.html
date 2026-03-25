@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>智慧体育 · 健康顾问 | 家长端</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(145deg, #e8f5e9 0%, #c8e6df 100%);
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+        }
+        .phone-frame {
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 48px;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 20px 18px 80px;
+            position: relative;
+        }
+        .status-bar { display: flex; justify-content: space-between; color: #5c9e6b; font-size: 13px; margin-bottom: 12px; }
+        .ai-header {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
+            background: linear-gradient(135deg, #e0f2e9, #c8e6df);
+            padding: 14px 18px; border-radius: 60px;
+        }
+        .avatar {
+            background: linear-gradient(145deg, #5c9e6b, #4c8a5a);
+            width: 52px; height: 52px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .avatar::after {
+            content: ''; position: absolute; top: -3px; right: -3px;
+            width: 14px; height: 14px; background: #4caf50; border-radius: 50%;
+            border: 2px solid white;
+        }
+        .avatar i { font-size: 28px; color: white; }
+        .ai-text h3 { font-size: 16px; color: #2d5a3b; font-weight: 700; }
+        .ai-text p { font-size: 11px; color: #6b9e78; }
+        .online-badge { background: #e0f2e9; color: #4c8a5a; font-size: 11px; padding: 4px 12px; border-radius: 20px; }
+        .child-selector {
+            background: #f0f7f0; border-radius: 32px; padding: 6px 10px; margin-bottom: 18px;
+            display: flex; gap: 12px; border: 1px solid #c8e0cf;
+        }
+        .child-tab {
+            flex: 1; text-align: center; padding: 8px 0; border-radius: 28px;
+            font-weight: 600; cursor: pointer; color: #6b9e78; font-size: 14px;
+        }
+        .child-tab.active { background: linear-gradient(135deg, #5c9e6b, #4c8a5a); color: white; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .card-module {
+            background: white; border-radius: 28px; margin-bottom: 18px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border: 1px solid #d4e8dc;
+            overflow: hidden;
+        }
+        .module-header {
+            padding: 14px 18px; background: #f8fff8; border-bottom: 1px solid #e0f0e5;
+            font-size: 16px; font-weight: 700; color: #2d5a3b; display: flex; align-items: center; gap: 8px;
+        }
+        .module-body { padding: 16px; }
+        /* 第一页新增卡片样式 */
+        .child-info-card {
+            background: linear-gradient(135deg, #f0f7f0, #e8f5e9);
+            border-radius: 24px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .child-basic {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .child-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #5c9e6b, #4c8a5a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .child-details h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2d5a3b;
+        }
+        .child-details p {
+            font-size: 12px;
+            color: #6b9e78;
+            margin-top: 2px;
+        }
+        .grade-badge {
+            background: #5c9e6b;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .ai-reminder-card {
+            background: linear-gradient(135deg, #fff8e8, #fff0d8);
+            border-left: 4px solid #ffb347;
+            border-radius: 20px;
+            padding: 14px;
+            margin-bottom: 16px;
+        }
+        .reminder-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #c47a2e;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .reminder-content {
+            font-size: 13px;
+            color: #5c5a4a;
+            line-height: 1.4;
+        }
+        .trend-card {
+            background: #f9fffc;
+            border-radius: 20px;
+            padding: 14px;
+            margin-bottom: 16px;
+            border: 1px solid #d0e8da;
+        }
+        .trend-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .trend-header span {
+            font-size: 13px;
+            font-weight: 600;
+            color: #2d5a3b;
+        }
+        .trend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .trend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            padding: 4px 0;
+            border-bottom: 1px dashed #e0f0e5;
+        }
+        .trend-label {
+            color: #6b9e78;
+        }
+        .trend-value {
+            font-weight: 600;
+            color: #2d5a3b;
+        }
+        .trend-up {
+            color: #5c9e6b;
+        }
+        .trend-down {
+            color: #ff8a7a;
+        }
+        .chat-area {
+            background: #f9fffc; border-radius: 24px; padding: 14px; border: 1px solid #d0e8da;
+        }
+        .message-list { height: 250px; max-height: 250px; overflow-y: auto; margin-bottom: 12px; }
+        .msg-item { margin-bottom: 10px; display: flex; gap: 8px; }
+        .msg-user { justify-content: flex-end; }
+        .msg-bubble {
+            max-width: 85%; padding: 8px 12px; border-radius: 20px; font-size: 13px;
+        }
+        .msg-user .msg-bubble { background: linear-gradient(135deg, #5c9e6b, #4c8a5a); color: white; }
+        .msg-ai .msg-bubble { background: #e8f5e9; color: #2d5a3b; border: 1px solid #c8e0cf; }
+        .input-wrapper { display: flex; gap: 8px; }
+        .input-wrapper input {
+            flex: 1; background: white; border: 1px solid #c8e0cf; border-radius: 40px;
+            padding: 10px 16px; font-size: 13px; outline: none;
+        }
+        .input-wrapper button {
+            background: linear-gradient(135deg, #5c9e6b, #4c8a5a);
+            border: none; width: 40px; height: 40px; border-radius: 50%; color: white; cursor: pointer;
+        }
+        /* 第一页样式 */
+        .radar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .radar-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 6px;
+        }
+        #radarChart { width: 180px; height: 180px; }
+        .physique-type {
+            background: #f0f7f0;
+            border-radius: 24px;
+            padding: 12px 20px;
+            text-align: center;
+            width: 100%;
+        }
+        .physique-type .label { font-size: 12px; color: #6b9e78; }
+        .physique-type .value { font-size: 20px; font-weight: 700; color: #2d5a3b; }
+        .advice-card {
+            border-radius: 20px;
+            padding: 12px;
+            /* margin-bottom: 12px; */
+            /* background: #f9fffc;
+            border: 1px solid #d0e8da; */
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        /* .advice-card.basic { border-left: 4px solid #5c9e6b; }
+        .advice-card.advanced { border-left: 4px solid #ffb347; } */
+        /* .advice-card.warning { border-left: 4px solid #ff8a7a; }  */
+        .advice-content { flex: 2; }
+        .advice-title { font-size: 15px; font-weight: 700; color: #2d5a3b; margin-bottom: 4px; }
+        .advice-desc { font-size: 13px; color: #6b9e78; margin-bottom: 6px; }
+        .detail-list li { font-size: 12px; padding: 2px 0; display: flex; gap: 6px; color: #4a6f5a; }
+        .advice-img { width: 80px; height: 80px; object-fit: cover; border-radius: 16px; flex-shrink: 0; }
+
+        /* 第二页样式 */
+        .class-feedback-card {
+            background: linear-gradient(135deg, #e8f5e9, #d4e8dc);
+            border-radius: 24px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .feedback-highlight { background: white; border-radius: 20px; padding: 12px; margin-top: 8px; }
+        .homework-card {
+            background: #f0f7f0;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .homework-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .homework-item {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            border: 1px solid #d0e8da;
+        }
+        .feedback-btn {
+            background: #5c9e6b;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+        }
+        .feedback-form {
+            background: white;
+            border-radius: 20px;
+            padding: 16px;
+            margin-top: 12px;
+            border: 1px solid #d0e8da;
+            display: none;
+        }
+        .feedback-form.show { display: block; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { font-size: 12px; font-weight: 600; color: #2d5a3b; display: block; margin-bottom: 4px; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 10px; border-radius: 30px; border: 1px solid #c8e0cf; font-size: 13px;
+        }
+        /* 日历头部 */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .calendar-header button {
+            background: #e8f5e9;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            color: #5c9e6b;
+        }
+        .calendar-header span {
+            font-weight: 600;
+            color: #2d5a3b;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+        .weekday {
+            text-align: center;
+            font-size: 11px;
+            color: #6b9e78;
+            padding: 6px 0;
+            font-weight: 600;
+        }
+        .calendar-day {
+            background: #f9fffc;
+            border-radius: 12px;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 12px;
+            cursor: pointer;
+            border: 1px solid #d0e8da;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .calendar-day.completed { background: #e0f2e9; border-color: #5c9e6b; color: #2d5a3b; }
+        .calendar-day.unfinished { background: #ffe8e5; border-color: #ffaa9a; color: #c44536; }
+        .calendar-day.selected { background: #c8e6df; border: 2px solid #5c9e6b; transform: scale(0.98); }
+        .calendar-day.empty { background: transparent; border: none; cursor: default; }
+        .day-detail-modal {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin-top: 16px;
+            border: 1px solid #d0e8da;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .stat-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 16px; }
+        .stat-table th, .stat-table td { border: 1px solid #d0e8da; padding: 8px 4px; text-align: center; background: white; }
+        .stat-table th { background: #e8f5e9; color: #2d5a3b; }
+
+        /* 第三页样式 */
+        .registered-card {
+            background: linear-gradient(135deg, #5c9e6b, #3d6b4a);
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: white;
+        }
+        .registered-detail {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 14px;
+            margin: 12px 0;
+            line-height: 1.6;
+        }
+        .modify-tip {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 10px;
+            font-size: 12px;
+            /* text-align: center; */
+        }
+        .class-item {
+            border-bottom: 1px solid #d0e8da;
+            padding: 16px 0;
+        }
+        .class-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .class-name { font-size: 16px; font-weight: 700; color: #2d5a3b; margin-bottom: 6px; }
+        .class-meta { font-size: 12px; color: #6b9e78; margin-bottom: 6px; }
+        .class-schedule { font-size: 11px; color: #8aac98; display: flex; gap: 12px; flex-wrap: wrap; }
+        .class-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 16px;
+            background: #e8f5e9;
+        }
+        .btn-register {
+            background: #5c9e6b;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 40px;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-register.disabled { background: #b8d0c0; cursor: not-allowed; }
+        .class-detail {
+            background: #f9fffc;
+            border-radius: 16px;
+            padding: 14px;
+            margin-top: 12px;
+            font-size: 13px;
+            display: none;
+            line-height: 1.5;
+        }
+        .class-detail.show { display: block; }
+        .expand-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #e8f5e9;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+        .small-note { font-size: 11px; color: #6b9e78; margin-top: 8px; }
+        .register-status {
+            background: #e0f2e9;
+            color: #2d5a3b;
+            padding: 10px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 12px;
+            display: none;
+        }
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto;
+            background: white; border-top: 1px solid #d0e8da; display: flex; justify-content: space-around;
+            padding: 10px 0; z-index: 999;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: #9bc0a8; font-size: 11px; padding: 6px 16px; border-radius: 20px; cursor: pointer;
+        }
+        .nav-item.active { color: #5c9e6b; background: #e8f5e9; }
+        .nav-item i { font-size: 20px; }
+        .detail-section { margin-bottom: 12px; }
+        .detail-label { font-weight: 600; color: #2d5a3b; margin-bottom: 4px; font-size: 12px; }
+        .detail-content { color: #4a6f5a; font-size: 13px; }
+    </style>
+</head>
+<body>
+<div class="phone-frame">
+    <div class="status-bar"><span>9:41</span><span><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span></div>
+
+    <!-- <div class="ai-header">
+        <div class="avatar"><i class="fas fa-leaf"></i></div>
+        <div class="ai-text"><h3>健康顾问 · 小希</h3><p>薄荷健康 · 守护成长</p></div>
+        <div class="online-badge">在线</div>
+    </div> -->
+
+    <div class="child-selector" id="childSelector">
+        <div class="child-tab active" data-child="xiaozhi">小智 (五年级)</div>
+        <div class="child-tab" data-child="xiaoya">小雅 (三年级)</div>
+    </div>
+
+    <!-- 第一页 -->
+    <div class="page active" id="page1">
+        <!-- AI 智能提醒横幅 -->
+        <div id="aiReminderCard" class="ai-reminder-card"></div>
+
+        <!-- 健康趋势简表 -->
+        <div id="trendCard" class="trend-card"></div>
+
+        <div class="card-module">
+            <div class="module-header">健康顾问 · AI助手</div>
+            <div class="module-body">
+                <div class="chat-area">
+                    <div class="message-list" id="chatMessages">
+                        <div class="msg-item msg-ai"><div class="msg-bubble">您好！告诉我孩子的身体状况、病史或运动表现，我会结合体测数据生成精准分型。</div></div>
+                        <div class="msg-item msg-user"><div class="msg-bubble">孩子体质短板在哪？如何改善？最近咳嗽刚好！</div></div>
+                        <div class="msg-item msg-ai"><div class="msg-bubble">已收到您的咨询！根据「孩子体质短板在哪？如何改善？最近咳嗽刚好！」结合体测数据，当前体质分型为「⚡ 力量爆发型」。建议：增强核心力量，避免剧烈跑跳。往下滑动查看详细信息：</div></div>
+                    </div>
+                    <div class="input-wrapper">
+                        <input type="text" id="healthInput" placeholder="例如：哮喘史，膝盖不适，耐力差...">
+                        <button id="sendHealthBtn"><i class="fas fa-paper-plane"></i></button>
+                        <button id="voiceBtn"><i class="fas fa-microphone"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-module">
+            <div class="module-header">AI 体质分型 & 运动建议</div>
+            <div class="module-body">
+                <div class="radar-section">
+                    <div class="radar-container"><canvas id="radarChart" width="200" height="200"></canvas></div>
+                    <div class="physique-type"><div class="label">当前体质分型</div><div class="value" id="physiqueType">⚡ 力量爆发型</div></div>
+                </div>
+                <div id="adviceCardsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第二页 -->
+    <div class="page" id="page2">
+        <div class="card-module">
+            <div class="module-header">体育课堂反馈</div>
+            <div class="module-body"><div id="classFeedbackSection" class="class-feedback-card"></div></div>
+        </div>
+        <div class="card-module">
+            <div class="module-header">体育课后作业</div>
+            <div class="module-body">
+                <div id="latestHomeworkSection"></div>
+                <button id="showFeedbackFormBtn" class="feedback-btn">📝 反馈完成情况</button>
+                <div id="feedbackFormContainer" class="feedback-form">
+                    <div class="form-group">
+                        <label>完成项目</label>
+                        <select id="feedbackProjectSelect"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>荣誉称号</label>
+                        <select id="feedbackHonorSelect">
+                            <option value="健将">健将（卓越表现）</option>
+                            <option value="新星">新星（进步显著）</option>
+                            <option value="新秀">新秀（入门阶段）</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>完成等级</label>
+                        <select id="feedbackGradeSelect">
+                            <option value="优秀">优秀（动作标准，完成质量高）</option>
+                            <option value="良好">良好（基本完成，有提升空间）</option>
+                            <option value="待提高">待提高（需加强练习）</option>
+                        </select>
+                    </div>
+                    <button id="submitHomeworkFeedbackBtn" class="feedback-btn" style="margin-top:0;">确认提交</button>
+                </div>
+            </div>
+        </div>
+        <div class="card-module">
+            <div class="module-header">历史记录</div>
+            <div class="module-body">
+                <div id="calendarContainer"></div>
+                <div id="dayDetailPanel" style="display:none;"></div>
+                <table class="stat-table" id="statTable"><thead><th>维度</th><th>数据</th> </thead><tbody></tbody>  </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第三页 -->
+    <div class="page" id="page3">
+        <div class="card-module">
+            <div class="module-header">兴趣班报名</div>
+            <div class="module-body">
+                <div id="registeredClassSection"></div>
+                <div class="small-note" style="margin-bottom: 12px;">智能推荐（基于年级/体质）</div>
+                <div id="classListContainer"></div>
+                <div id="registerStatusMsg" class="register-status"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" data-page="page1"><i class="fas fa-heart-pulse"></i><span>健康顾问</span></div>
+        <div class="nav-item" data-page="page2"><i class="fas fa-futbol"></i><span>体育课堂</span></div>
+        <div class="nav-item" data-page="page3"><i class="fas fa-ticket-alt"></i><span>课后延时</span></div>
+    </div>
+</div>
+
+<script>
+    // 孩子数据
+    const childrenData = {
+        xiaozhi: {
+            name: "小智", grade: 5, class: "五年级(3)班", height: 145, weight: 38,
+            physique: { strength: 78, endurance: 72, flexibility: 68, coordination: 75, speed: 80 },
+            type: "⚡ 力量爆发型",
+            advice: {
+                basic: { title: "力量基础", desc: "增强核心力量", img: "https://picsum.photos/id/100/80/80", details: "频次：每周3次；动作：平板支撑30秒×3组、俯卧撑12次×3组" },
+                advanced: { title: "爆发力训练", desc: "提升跳跃能力", img: "https://picsum.photos/id/101/80/80", details: "频次：每周2次；动作：深蹲跳10次×3组、立定跳远练习" },
+                warning: { title: "注意事项", desc: "运动安全", img: "https://picsum.photos/id/102/80/80", details: "充分热身，避免肌肉拉伤；避免剧烈运动，保持呼吸" }
+            },
+            classFeedbacks: [
+                { date: "2025-03-24", group: "力量训练组", content: "力量训练表现优秀，跳远成绩优异，课堂表现积极！" },
+                { date: "2025-03-23", group: "力量训练组", content: "深蹲动作标准，耐力有所提升" }
+            ],
+            homeworkList: [
+                { date: "2025-03-24", items: ["跳绳120个×3组", "蛙跳10次×3组", "仰卧起坐20个×2组"], selectedItem: null, status: "unfinished", honor: "", grade: "" },
+                { date: "2025-03-23", items: ["高抬腿30秒×3组", "开合跳20次×3组"], selectedItem: "高抬腿30秒×3组", status: "completed", honor: "健将", grade: "优秀" }
+            ],
+            registeredClass: null
+        },
+        xiaoya: {
+            name: "小雅", grade: 3, class: "三年级(1)班", height: 132, weight: 27,
+            physique: { strength: 62, endurance: 70, flexibility: 85, coordination: 72, speed: 68 },
+            type: "🧘 柔韧均衡型",
+            advice: {
+                basic: { title: "柔韧基础", desc: "提升关节灵活度", img: "https://picsum.photos/id/103/80/80", details: "频次：每天；动作：坐位体前屈、猫牛式" },
+                advanced: { title: "体态改善", desc: "纠正不良姿势", img: "https://picsum.photos/id/104/80/80", details: "频次：每周4次；动作：蝴蝶式、弓步转体" },
+                warning: { title: "注意事项", desc: "安全拉伸", img: "https://picsum.photos/id/105/80/80", details: "避免过度拉伸，保持呼吸" }
+            },
+            classFeedbacks: [
+                { date: "2025-03-24", group: "柔韧训练组", content: "柔韧练习表现优秀，坐位体前屈进步显著！" }
+            ],
+            homeworkList: [
+                { date: "2025-03-24", items: ["坐位体前屈20秒×3", "儿童拉伸操5分钟", "青蛙趴30秒×2"], selectedItem: null, status: "unfinished", honor: "", grade: "" },
+                { date: "2025-03-23", items: ["高抬腿30秒×2组", "开合跳15次×3组"], selectedItem: "高抬腿30秒×2组", status: "completed", honor: "健将", grade: "优秀" }
+            ],
+            registeredClass: null
+        }
+    };
+
+    const allClasses = [
+        { id: 1, name: "跳绳提高班", grade: "3-5年级", capacity: 20, enrolled: 2, duration: "8课时", coach: "李教练", schedule: "每周二、四 16:30-17:30", qualities: "心肺耐力、下肢爆发力", detail: "通过花样跳绳提升协调性", img: "https://picsum.photos/id/20/60/60" },
+        { id: 2, name: "篮球兴趣班", grade: "3-6年级", capacity: 18, enrolled: 5, duration: "10课时", coach: "王教练", schedule: "每周一、三 16:30-17:40", qualities: "团队协作、敏捷性", detail: "基础运球投篮", img: "https://picsum.photos/id/26/60/60" },
+        { id: 3, name: "体能强化班", grade: "4-6年级", capacity: 15, enrolled: 3, duration: "8课时", coach: "张老师", schedule: "每周五 16:30-17:30", qualities: "综合体能、核心力量", detail: "体测专项训练", img: "https://picsum.photos/id/29/60/60" },
+        { id: 5, name: "柔韧瑜伽班", grade: "5-6年级", capacity: 12, enrolled: 1, duration: "8课时", coach: "刘老师", schedule: "每周二、五 16:30-17:20", qualities: "柔韧性、体态", detail: "儿童瑜伽", img: "https://picsum.photos/id/48/60/60" },
+        { id: 4, name: "柔韧瑜伽班", grade: "2-4年级", capacity: 12, enrolled: 1, duration: "8课时", coach: "刘老师", schedule: "每周二、五 16:30-17:20", qualities: "柔韧性、体态", detail: "儿童瑜伽", img: "https://picsum.photos/id/48/60/60" }
+    ];
+
+    let currentChild = "xiaozhi";
+    let radarChart = null;
+    let selectedDate = null;
+    let currentYear = 2025;
+    let currentMonth = 2;
+
+    // AI分析函数 - 根据用户输入调整体质数据和运动建议
+    function analyzeUserFeedback(userMessage, basePhysique, baseAdvice) {
+        const msg = userMessage.toLowerCase();
+        let newPhysique = { ...basePhysique };
+        let newType = "";
+        let newAdvice = { ...baseAdvice };
+        
+        // 根据关键词调整雷达图数据
+        if (msg.includes("耐力差") || msg.includes("跑不动") || msg.includes("体力差")) {
+            newPhysique.endurance = Math.max(40, basePhysique.endurance - 25);
+            newType = "❤️ 耐力待提升型";
+            newAdvice.basic = {
+                title: "耐力基础训练",
+                desc: "提升心肺功能，增强耐力",
+                img: "https://picsum.photos/id/29/80/80",
+                details: "频次：每周3-4次；动作：间歇跑（慢跑1分钟+快走30秒）×8组、跳绳1分钟×5组；要点：保持呼吸节奏，心率控制在最大心率的60-70%"
+            };
+            newAdvice.advanced = {
+                title: "进阶耐力训练",
+                desc: "增强持久力",
+                img: "https://picsum.photos/id/30/80/80",
+                details: "频次：每周2次；动作：法特莱克跑15分钟、跳绳双摇挑战；要点：逐步增加时长，注意补水"
+            };
+        } else if (msg.includes("力量差") || msg.includes("力气小") || msg.includes("俯卧撑")) {
+            newPhysique.strength = Math.max(45, basePhysique.strength - 20);
+            newType = "💪 力量待提升型";
+            newAdvice.basic = {
+                title: "力量基础训练",
+                desc: "增强上肢和核心力量",
+                img: "https://picsum.photos/id/100/80/80",
+                details: "频次：每周3次；动作：跪姿俯卧撑8次×3组、平板支撑20秒×3组；要点：动作标准，循序渐进"
+            };
+            newAdvice.advanced = {
+                title: "进阶力量训练",
+                desc: "提升爆发力",
+                img: "https://picsum.photos/id/101/80/80",
+                details: "频次：每周2次；动作：标准俯卧撑10次×3组、深蹲跳12次×3组；要点：控制节奏，避免受伤"
+            };
+        } else if (msg.includes("柔韧差") || msg.includes("僵硬") || msg.includes("体前屈")) {
+            newPhysique.flexibility = Math.max(40, basePhysique.flexibility - 25);
+            newType = "🧘 柔韧待提升型";
+            newAdvice.basic = {
+                title: "柔韧基础训练",
+                desc: "提升关节灵活度",
+                img: "https://picsum.photos/id/48/80/80",
+                details: "频次：每天；动作：坐位体前屈保持20秒×3组、猫牛式10次；要点：不要弹震，配合深呼吸"
+            };
+            newAdvice.advanced = {
+                title: "进阶拉伸训练",
+                desc: "改善体态与柔韧性",
+                img: "https://picsum.photos/id/42/80/80",
+                details: "频次：每周4次；动作：蝴蝶式压腿30秒、弓步转体每侧15秒；要点：感受肌肉拉伸感，不疼痛"
+            };
+        } else if (msg.includes("协调差") || msg.includes("笨拙") || msg.includes("平衡差")) {
+            newPhysique.coordination = Math.max(45, basePhysique.coordination - 20);
+            newType = "🎯 协调待提升型";
+            newAdvice.basic = {
+                title: "协调性基础训练",
+                desc: "提升身体控制能力",
+                img: "https://picsum.photos/id/20/80/80",
+                details: "频次：每周3次；动作：原地高抬腿30秒×3组、交叉步移动10次；要点：保持节奏，先慢后快"
+            };
+            newAdvice.advanced = {
+                title: "进阶协调训练",
+                desc: "增强神经肌肉控制",
+                img: "https://picsum.photos/id/26/80/80",
+                details: "频次：每周2次；动作：敏捷梯训练、单脚站立接球；要点：专注动作，逐步增加难度"
+            };
+        } else if (msg.includes("哮喘") || msg.includes("呼吸")) {
+            newPhysique.endurance = Math.max(50, basePhysique.endurance - 15);
+            newType = "🌬️ 心肺敏感型";
+            newAdvice.basic = {
+                title: "呼吸基础训练",
+                desc: "温和提升心肺功能",
+                img: "https://picsum.photos/id/46/80/80",
+                details: "频次：每周3次；动作：腹式呼吸练习3分钟、慢走15分钟；要点：避免剧烈运动，随身携带药物"
+            };
+            newAdvice.warning = {
+                title: "特别注意事项",
+                desc: "运动安全第一",
+                img: "https://picsum.photos/id/102/80/80",
+                details: "运动前充分热身，避免冷空气刺激；随时观察呼吸状况，不适立即停止"
+            };
+        } else if (msg.includes("膝盖") || msg.includes("关节")) {
+            newPhysique.strength = Math.max(55, basePhysique.strength - 10);
+            newType = "🦵 关节保护型";
+            newAdvice.basic = {
+                title: "关节保护训练",
+                desc: "强化下肢稳定性",
+                img: "https://picsum.photos/id/65/80/80",
+                details: "频次：每周3次；动作：靠墙静蹲20秒×3组、坐姿腿屈伸12次×3组；要点：避免跳跃，佩戴护膝"
+            };
+            newAdvice.warning = {
+                title: "注意事项",
+                desc: "减少跳跃类动作",
+                img: "https://picsum.photos/id/102/80/80",
+                details: "避免深蹲跳、急停变向；运动时佩戴护膝，控制落地缓冲"
+            };
+        } else {
+            // 默认保持原有数据
+            newType = basePhysique.type;
+            return null; // 无变化时不更新
+        }
+        
+        return { physique: newPhysique, type: newType, advice: newAdvice };
+    }
+
+    // 更新第一页所有卡片
+    function updateFirstPage() {
+        const child = childrenData[currentChild];
+        
+        // AI 智能提醒
+        let reminderText = "";
+        if (child.physique.endurance < 70) {
+            reminderText = "⚠️ 耐力评分偏低，建议增加每周2次游泳或慢跑，已为您推荐耐力提升运动处方 ↓";
+        } else if (child.homeworkList[0]?.status === "unfinished") {
+            reminderText = "📋 昨日课后作业未反馈，请及时完成打卡，帮助孩子养成运动习惯。";
+        } else {
+            reminderText = "🎉 最近运动表现良好！继续保持，下个体测目标：提升柔韧性。";
+        }
+        document.getElementById("aiReminderCard").innerHTML = `
+            <div class="reminder-title"><i class="fas fa-lightbulb"></i> AI 智能提醒</div>
+            <div class="reminder-content">${reminderText}</div>
+        `;
+        
+        // 健康趋势简表
+        const completedCount = child.homeworkList.filter(h => h.status === 'completed').length;
+        const totalCount = child.homeworkList.length;
+        const completeRate = totalCount > 0 ? Math.round(completedCount / totalCount * 100) : 0;
+        document.getElementById("trendCard").innerHTML = `
+            <div class="trend-header"><span>📊 健康趋势简表</span><span>近一周</span></div>
+            <div class="trend-items">
+                <div class="trend-item"><span class="trend-label">运动打卡完成率</span><span class="trend-value">${completeRate}%</span></div>
+                <div class="trend-item"><span class="trend-label">50米跑</span><span class="trend-value trend-up">9.2s <i class="fas fa-arrow-up"></i> 提升0.6s</span></div>
+                <div class="trend-item"><span class="trend-label">跳绳(1分钟)</span><span class="trend-value trend-up">128个 <i class="fas fa-arrow-up"></i> 提升12个</span></div>
+                <div class="trend-item"><span class="trend-label">坐位体前屈</span><span class="trend-value">12cm → 14.5cm</span></div>
+            </div>
+        `;
+    }
+
+    // 动态更新雷达图和运动建议
+    function updatePhysiqueAndAdvice(userMessage) {
+        const child = childrenData[currentChild];
+        const analysisResult = analyzeUserFeedback(userMessage, child.physique, child.advice);
+        
+        if (analysisResult) {
+            // 更新孩子的体质数据
+            child.physique = analysisResult.physique;
+            child.type = analysisResult.type;
+            child.advice = analysisResult.advice;
+        }
+        
+        // 重新渲染雷达图和运动建议
+        renderAdvice();
+    }
+
+    function renderAdvice() {
+        const child = childrenData[currentChild];
+        const container = document.getElementById("adviceCardsContainer");
+        const a = child.advice;
+        container.innerHTML = `
+            <div class="advice-card basic"><div class="advice-content"><div class="advice-title">${a.basic.title} — <span class="advice-desc">${a.basic.desc}</span></div><ul class="detail-list">${a.basic.details.split('；').map(d=>`<li>• ${d}</li>`).join('')}</ul></div></div>
+            <div class="advice-card advanced"><div class="advice-content"><div class="advice-title">${a.advanced.title} — <span class="advice-desc">${a.advanced.desc}</span></div><ul class="detail-list">${a.advanced.details.split('；').map(d=>`<li>• ${d}</li>`).join('')}</ul></div></div>
+            <div class="advice-card warning"><div class="advice-content"><div class="advice-title" style="color:#ff8a7a">${a.warning.title} — <span class="advice-desc" style="color:#ff8a7a">${a.warning.desc}</span></div><ul class="detail-list">${a.warning.details.split('；').map(d=>`<li>• ${d}</li>`).join('')}</ul></div></div>
+        `;
+        document.getElementById("physiqueType").innerHTML = child.type;
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        if (radarChart) radarChart.destroy();
+        radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: { labels: ['力量','耐力','柔韧','协调','速度'], datasets: [{ label: '体质评分', data: [child.physique.strength, child.physique.endurance, child.physique.flexibility, child.physique.coordination, child.physique.speed], backgroundColor: 'rgba(92,158,107,0.2)', borderColor: '#5c9e6b', pointBackgroundColor: '#5c9e6b' }] },
+            options: { scales: { r: { min: 20, max: 100, ticks: { stepSize: 20 } } }, plugins: { legend: { display: false } } }
+        });
+    }
+
+    function renderHomeworkPage() {
+        const child = childrenData[currentChild];
+        const latestFeedback = child.classFeedbacks[0];
+        document.getElementById("classFeedbackSection").innerHTML = `<div style="font-weight:600;">${latestFeedback.date} · ${latestFeedback.group}</div><div class="feedback-highlight">${latestFeedback.content}</div>`;
+        
+        const latest = child.homeworkList[0];
+        document.getElementById("latestHomeworkSection").innerHTML = `
+            <div class="homework-card">
+                <div style="font-weight:600; margin-bottom:8px;">${latest.date} 课后作业（三选一）</div>
+                <div class="homework-items">${latest.items.map((item, idx) => `<div class="homework-item">${idx+1}. ${item}</div>`).join('')}</div>
+                <div style="margin-top:8px; font-size:13px;">状态: ${latest.status === 'completed' ? '✅ 已完成' : '⏳ 待反馈'}</div>
+                ${latest.status === 'completed' ? `<div style="margin-top:6px; font-size:12px; color:#5c9e6b;">🏅 ${latest.honor} · ${latest.grade}</div>` : ''}
+            </div>
+        `;
+        
+        const projectSelect = document.getElementById("feedbackProjectSelect");
+        projectSelect.innerHTML = latest.items.map(item => `<option value="${item}">${item}</option>`).join('');
+        
+        renderCalendar();
+        const completed = child.homeworkList.filter(h => h.status === 'completed').length;
+        const total = child.homeworkList.length;
+        const rate = total > 0 ? Math.round(completed / total * 100) : 0;
+        document.querySelector("#statTable tbody").innerHTML = `
+            <tr><td>打卡次数</td><td>${completed} / ${total}</td></tr>
+            <tr><td>待补卡</td><td>${total - completed}</td></tr>
+            <tr><td>完成率</td><td>${rate}%</td></tr>
+            <tr><td>综合评价</td><td>${rate >= 80 ? '优秀' : (rate >= 60 ? '良好' : '待提高')}</td></tr>
+        `;
+    }
+
+    function renderCalendar() {
+        const child = childrenData[currentChild];
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+        
+        let html = `
+            <div class="calendar-header">
+                <button id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
+                <span>${currentYear}年 ${monthNames[currentMonth]}</span>
+                <button id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="weekday">
+                <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+            </div>
+            <div class="calendar-grid" id="calendarGrid">
+        `;
+        
+        for (let i = 0; i < firstDay; i++) {
+            html += '<div class="calendar-day empty"></div>';
+        }
+        
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const hw = child.homeworkList.find(h => h.date === dateStr);
+            let cls = '';
+            if (hw) {
+                cls = hw.status === 'completed' ? 'completed' : 'unfinished';
+            }
+            html += `<div class="calendar-day ${cls} ${selectedDate === dateStr ? 'selected' : ''}" data-date="${dateStr}"><div>${d}</div></div>`;
+        }
+        html += `</div>`;
+        
+        document.getElementById("calendarContainer").innerHTML = html;
+        
+        document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
+            day.addEventListener('click', () => {
+                selectedDate = day.getAttribute('data-date');
+                showDayDetail(selectedDate);
+                renderCalendar();
+            });
+        });
+        
+        document.getElementById("prevMonthBtn")?.addEventListener('click', () => {
+            if (currentMonth === 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else {
+                currentMonth--;
+            }
+            selectedDate = null;
+            renderCalendar();
+            document.getElementById("dayDetailPanel").style.display = "none";
+        });
+        
+        document.getElementById("nextMonthBtn")?.addEventListener('click', () => {
+            if (currentMonth === 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else {
+                currentMonth++;
+            }
+            selectedDate = null;
+            renderCalendar();
+            document.getElementById("dayDetailPanel").style.display = "none";
+        });
+    }
+
+    function showDayDetail(date) {
+        const child = childrenData[currentChild];
+        const hw = child.homeworkList.find(h => h.date === date);
+        const classFeedback = child.classFeedbacks.find(f => f.date === date);
+        const panel = document.getElementById("dayDetailPanel");
+        if (!hw && !classFeedback) { 
+            panel.style.display = "none"; 
+            return; 
+        }
+        panel.style.display = "block";
+        
+        let html = `<div class="day-detail-modal"><div style="font-weight:700; margin-bottom:12px;">📅 ${date}</div>`;
+        if (classFeedback) {
+            html += `<div class="detail-section"><div class="detail-label">体育课堂表现</div><div class="detail-content">${classFeedback.group} · ${classFeedback.content}</div></div>`;
+        } else {
+            html += `<div class="detail-section"><div class="detail-label">体育课堂表现</div><div class="detail-content">暂无记录</div></div>`;
+        }
+        if (hw) {
+            html += `<div class="detail-section"><div class="detail-label">课后作业</div><div class="detail-content">${hw.items.join(' · ')}</div></div>`;
+            html += `<div class="detail-section"><div class="detail-label">完成状态</div><div class="detail-content">${hw.status === 'completed' ? '✅ 已完成' : '⏳ 未完成'}</div></div>`;
+            if (hw.status === 'completed') {
+                html += `<div class="detail-section"><div class="detail-label">完成评价</div><div class="detail-content">🏅 ${hw.honor} · ${hw.grade}</div></div>`;
+            } else {
+                html += `
+                    <div style="margin-top:12px; border-top:1px solid #d0e8da; padding-top:12px;">
+                        <div class="detail-label">补卡反馈</div>
+                        <select id="detailItemSelect" style="width:100%; padding:8px; border-radius:20px; border:1px solid #c8e0cf; margin-bottom:8px;">${hw.items.map(i => `<option value="${i}">${i}</option>`).join('')}</select>
+                        <select id="detailHonorSelect" style="width:100%; padding:8px; border-radius:20px; border:1px solid #c8e0cf; margin-bottom:8px;"><option>健将</option><option>新星</option><option>新秀</option></select>
+                        <select id="detailGradeSelect" style="width:100%; padding:8px; border-radius:20px; border:1px solid #c8e0cf; margin-bottom:8px;"><option>优秀</option><option>良好</option><option>待提高</option></select>
+                        <button id="detailFeedbackBtn" class="feedback-btn" style="margin-top:0;">提交补卡</button>
+                    </div>
+                `;
+            }
+        }
+        html += `</div>`;
+        panel.innerHTML = html;
+        
+        if (hw && hw.status !== 'completed') {
+            document.getElementById("detailFeedbackBtn")?.addEventListener('click', () => {
+                hw.status = 'completed';
+                hw.selectedItem = document.getElementById("detailItemSelect").value;
+                hw.honor = document.getElementById("detailHonorSelect").value;
+                hw.grade = document.getElementById("detailGradeSelect").value;
+                alert(`已为${date}补卡完成！`);
+                renderHomeworkPage();
+                showDayDetail(date);
+            });
+        }
+    }
+
+    function renderInterest() {
+        const child = childrenData[currentChild];
+        const gradeNum = child.grade;
+        const availableClasses = allClasses.filter(c => {
+            const range = c.grade.split('-');
+            return gradeNum >= parseInt(range[0]) && gradeNum <= parseInt(range[1]);
+        });
+        const registeredClass = availableClasses.find(c => c.id === child.registeredClass);
+        
+        if (registeredClass) {
+            document.getElementById("registeredClassSection").innerHTML = `
+                <div class="registered-card">
+                    <div style="font-size:18px; font-weight:700;">${registeredClass.name}</div>
+                    <div class="registered-detail">
+                        <div>📅 ${registeredClass.duration} | 👨‍🏫 ${registeredClass.coach}</div>
+                        <div>⏰ ${registeredClass.schedule}</div>
+                        <div>🎯 ${registeredClass.qualities}</div>
+                        <div>📖 ${registeredClass.detail}</div>
+                    </div>
+                    <div class="modify-tip">📞 如需调整，请联系体育老师李老师(138****1234)</div>
+                </div>
+            `;
+        } else {
+            document.getElementById("registeredClassSection").innerHTML = `<div class="registered-card" style="background:#e8f5e9; color:#2d5a3b;"><div style="font-size:16px;">暂未报名兴趣班</div><div>以下为可选课程（每人限报1个）</div></div>`;
+        }
+        
+        let listHtml = '';
+        availableClasses.forEach(cls => {
+            const isRegistered = child.registeredClass === cls.id;
+            const remaining = cls.capacity - cls.enrolled;
+            listHtml += `
+                <div class="class-item">
+                    <div class="class-header">
+                        <div style="display:flex; gap:12px; flex:1;">
+                            <img class="class-img" src="${cls.img}" alt="${cls.name}">
+                            <div style="flex:1;">
+                                <div class="class-name">${cls.name}</div>
+                                <div class="class-meta">👨‍🏫 ${cls.coach} · 剩余名额 ${remaining}/${cls.capacity}</div>
+                                <div class="class-schedule">${cls.duration} · ${cls.schedule}</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="expand-icon" data-id="${cls.id}"><i class="fas fa-chevron-down"></i></div>
+                            <button class="btn-register ${isRegistered ? 'disabled' : ''}" data-id="${cls.id}" ${isRegistered ? 'disabled' : ''}>${isRegistered ? '已报名' : '报名'}</button>
+                        </div>
+                    </div>
+                    <div class="class-detail" id="detail-${cls.id}">
+                        <div><strong>提升素质</strong><br>${cls.qualities}</div>
+                        <div style="margin-top:8px;"><strong>课程详情</strong><br>${cls.detail}</div>
+                        <div style="margin-top:8px;"><strong>适合年级</strong> ${cls.grade}</div>
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById("classListContainer").innerHTML = listHtml;
+        
+        document.querySelectorAll('.expand-icon').forEach(icon => {
+            icon.addEventListener('click', () => {
+                const id = icon.getAttribute('data-id');
+                document.getElementById(`detail-${id}`).classList.toggle('show');
+            });
+        });
+        
+        document.querySelectorAll('.btn-register').forEach(btn => {
+            if (!btn.disabled) {
+                btn.addEventListener('click', () => {
+                    if (child.registeredClass) {
+                        document.getElementById("registerStatusMsg").innerHTML = "每个孩子限报一个兴趣班，如需更改请联系老师。";
+                        document.getElementById("registerStatusMsg").style.display = "block";
+                        setTimeout(() => document.getElementById("registerStatusMsg").style.display = "none", 3000);
+                        return;
+                    }
+                    const id = parseInt(btn.getAttribute('data-id'));
+                    const cls = availableClasses.find(c => c.id === id);
+                    if (cls.enrolled >= cls.capacity) {
+                        document.getElementById("registerStatusMsg").innerHTML = "该班级已满员。";
+                        document.getElementById("registerStatusMsg").style.display = "block";
+                        setTimeout(() => document.getElementById("registerStatusMsg").style.display = "none", 3000);
+                        return;
+                    }
+                    cls.enrolled++;
+                    child.registeredClass = id;
+                    renderInterest();
+                    document.getElementById("registerStatusMsg").innerHTML = `✅ 成功报名【${cls.name}】`;
+                    document.getElementById("registerStatusMsg").style.display = "block";
+                    setTimeout(() => document.getElementById("registerStatusMsg").style.display = "none", 3000);
+                });
+            }
+        });
+    }
+
+    // 反馈表单控制
+    document.getElementById("showFeedbackFormBtn").addEventListener("click", () => {
+        document.getElementById("feedbackFormContainer").classList.toggle("show");
+    });
+    document.getElementById("submitHomeworkFeedbackBtn").addEventListener("click", () => {
+        const child = childrenData[currentChild];
+        const latest = child.homeworkList[0];
+        const project = document.getElementById("feedbackProjectSelect").value;
+        const honor = document.getElementById("feedbackHonorSelect").value;
+        const grade = document.getElementById("feedbackGradeSelect").value;
+        if (latest.status === 'completed') {
+            alert("该作业已完成反馈，无需重复提交");
+            return;
+        }
+        latest.status = "completed";
+        latest.selectedItem = project;
+        latest.honor = honor;
+        latest.grade = grade;
+        alert(`反馈成功！项目：${project}，荣誉：${honor}，等级：${grade}`);
+        document.getElementById("feedbackFormContainer").classList.remove("show");
+        renderHomeworkPage();
+    });
+
+    function addMessage(text, isUser) {
+        const container = document.getElementById("chatMessages");
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `msg-item ${isUser ? 'msg-user' : 'msg-ai'}`;
+        msgDiv.innerHTML = `<div class="msg-bubble">${text}</div>`;
+        container.appendChild(msgDiv);
+        container.scrollTop = container.scrollHeight;
+        while(container.children.length > 6) container.removeChild(container.firstChild);
+    }
+    
+    // 发送消息并更新体质分析
+    document.getElementById("sendHealthBtn").addEventListener("click", () => {
+        const input = document.getElementById("healthInput");
+        const msg = input.value.trim();
+        if (!msg) return;
+        addMessage(msg, true);
+        input.value = "";
+        
+        // 调用AI分析并更新雷达图和运动建议
+        updatePhysiqueAndAdvice(msg);
+        
+        setTimeout(() => {
+            const child = childrenData[currentChild];
+            addMessage(`已收到您的反馈！根据「${msg}」结合体测数据，当前体质分型为「${child.type}」。建议：${child.advice.basic.desc}`, false);
+        }, 500);
+    });
+    document.getElementById("voiceBtn").addEventListener("click", () => alert("🎙️ 语音输入功能"));
+
+    document.querySelectorAll('.child-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.child-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentChild = tab.getAttribute('data-child');
+            selectedDate = null;
+            updateFirstPage();
+            renderAdvice();
+            renderHomeworkPage();
+            renderInterest();
+        });
+    });
+    
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            item.classList.add('active');
+            document.getElementById(item.getAttribute('data-page')).classList.add('active');
+            if (item.getAttribute('data-page') === 'page2') renderHomeworkPage();
+            if (item.getAttribute('data-page') === 'page3') renderInterest();
+        });
+    });
+
+    window.onload = () => {
+        updateFirstPage();
+        renderAdvice();
+        renderHomeworkPage();
+        renderInterest();
+    };
+</script>
+</body>
+</html>
