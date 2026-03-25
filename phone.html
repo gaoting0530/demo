@@ -160,8 +160,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 13px;
-            padding: 6px 0;
+            font-size: 14px;
+            padding: 4px 0;
             border-bottom: 1px dashed #e0f0e5;
         }
         .trend-label {
@@ -180,7 +180,7 @@
         .chat-area {
             background: #f9fffc; border-radius: 24px; padding: 14px; border: 1px solid #d0e8da;
         }
-        .message-list { max-height: 150px; overflow-y: auto; margin-bottom: 12px; }
+        .message-list { height: 250px; max-height: 250px; overflow-y: auto; margin-bottom: 12px; }
         .msg-item { margin-bottom: 10px; display: flex; gap: 8px; }
         .msg-user { justify-content: flex-end; }
         .msg-bubble {
@@ -222,20 +222,20 @@
         .advice-card {
             border-radius: 20px;
             padding: 12px;
-            margin-bottom: 12px;
-            background: #f9fffc;
-            border: 1px solid #d0e8da;
+            /* margin-bottom: 12px; */
+            /* background: #f9fffc;
+            border: 1px solid #d0e8da; */
             display: flex;
             gap: 12px;
             align-items: center;
         }
-        .advice-card.basic { border-left: 4px solid #5c9e6b; }
-        .advice-card.advanced { border-left: 4px solid #ffb347; }
-        .advice-card.warning { border-left: 4px solid #ff8a7a; }
+        /* .advice-card.basic { border-left: 4px solid #5c9e6b; }
+        .advice-card.advanced { border-left: 4px solid #ffb347; } */
+        /* .advice-card.warning { border-left: 4px solid #ff8a7a; }  */
         .advice-content { flex: 2; }
-        .advice-title { font-size: 14px; font-weight: 700; color: #2d5a3b; margin-bottom: 4px; }
-        .advice-desc { font-size: 11px; color: #6b9e78; margin-bottom: 6px; }
-        .detail-list li { font-size: 10px; padding: 2px 0; display: flex; gap: 6px; color: #4a6f5a; }
+        .advice-title { font-size: 15px; font-weight: 700; color: #2d5a3b; margin-bottom: 4px; }
+        .advice-desc { font-size: 13px; color: #6b9e78; margin-bottom: 6px; }
+        .detail-list li { font-size: 12px; padding: 2px 0; display: flex; gap: 6px; color: #4a6f5a; }
         .advice-img { width: 80px; height: 80px; object-fit: cover; border-radius: 16px; flex-shrink: 0; }
 
         /* 第二页样式 */
@@ -372,7 +372,7 @@
             border-radius: 20px;
             padding: 10px;
             font-size: 12px;
-            text-align: center;
+            /* text-align: center; */
         }
         .class-item {
             border-bottom: 1px solid #d0e8da;
@@ -457,11 +457,11 @@
 <div class="phone-frame">
     <div class="status-bar"><span>9:41</span><span><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span></div>
 
-    <div class="ai-header">
+    <!-- <div class="ai-header">
         <div class="avatar"><i class="fas fa-leaf"></i></div>
         <div class="ai-text"><h3>健康顾问 · 小希</h3><p>薄荷健康 · 守护成长</p></div>
         <div class="online-badge">在线</div>
-    </div>
+    </div> -->
 
     <div class="child-selector" id="childSelector">
         <div class="child-tab active" data-child="xiaozhi">小智 (五年级)</div>
@@ -477,11 +477,13 @@
         <div id="trendCard" class="trend-card"></div>
 
         <div class="card-module">
-            <div class="module-header">AI 健康反馈</div>
+            <div class="module-header">健康顾问 · AI助手</div>
             <div class="module-body">
                 <div class="chat-area">
                     <div class="message-list" id="chatMessages">
                         <div class="msg-item msg-ai"><div class="msg-bubble">您好！告诉我孩子的身体状况、病史或运动表现，我会结合体测数据生成精准分型。</div></div>
+                        <div class="msg-item msg-user"><div class="msg-bubble">孩子体质短板在哪？如何改善？最近咳嗽刚好！</div></div>
+                        <div class="msg-item msg-ai"><div class="msg-bubble">已收到您的咨询！根据「孩子体质短板在哪？如何改善？最近咳嗽刚好！」结合体测数据，当前体质分型为「⚡ 力量爆发型」。建议：增强核心力量，避免剧烈跑跳。往下滑动查看详细信息：</div></div>
                     </div>
                     <div class="input-wrapper">
                         <input type="text" id="healthInput" placeholder="例如：哮喘史，膝盖不适，耐力差...">
@@ -565,7 +567,7 @@
     <div class="bottom-nav">
         <div class="nav-item active" data-page="page1"><i class="fas fa-heart-pulse"></i><span>健康顾问</span></div>
         <div class="nav-item" data-page="page2"><i class="fas fa-futbol"></i><span>体育课堂</span></div>
-        <div class="nav-item" data-page="page3"><i class="fas fa-ticket-alt"></i><span>兴趣班</span></div>
+        <div class="nav-item" data-page="page3"><i class="fas fa-ticket-alt"></i><span>课后延时</span></div>
     </div>
 </div>
 
@@ -579,7 +581,7 @@
             advice: {
                 basic: { title: "力量基础", desc: "增强核心力量", img: "https://picsum.photos/id/100/80/80", details: "频次：每周3次；动作：平板支撑30秒×3组、俯卧撑12次×3组" },
                 advanced: { title: "爆发力训练", desc: "提升跳跃能力", img: "https://picsum.photos/id/101/80/80", details: "频次：每周2次；动作：深蹲跳10次×3组、立定跳远练习" },
-                warning: { title: "注意事项", desc: "运动安全", img: "https://picsum.photos/id/102/80/80", details: "充分热身，避免肌肉拉伤" }
+                warning: { title: "注意事项", desc: "运动安全", img: "https://picsum.photos/id/102/80/80", details: "充分热身，避免肌肉拉伤；避免剧烈运动，保持呼吸" }
             },
             classFeedbacks: [
                 { date: "2025-03-24", group: "力量训练组", content: "力量训练表现优秀，跳远成绩优异，课堂表现积极！" },
@@ -615,6 +617,7 @@
         { id: 1, name: "跳绳提高班", grade: "3-5年级", capacity: 20, enrolled: 2, duration: "8课时", coach: "李教练", schedule: "每周二、四 16:30-17:30", qualities: "心肺耐力、下肢爆发力", detail: "通过花样跳绳提升协调性", img: "https://picsum.photos/id/20/60/60" },
         { id: 2, name: "篮球兴趣班", grade: "3-6年级", capacity: 18, enrolled: 5, duration: "10课时", coach: "王教练", schedule: "每周一、三 16:30-17:40", qualities: "团队协作、敏捷性", detail: "基础运球投篮", img: "https://picsum.photos/id/26/60/60" },
         { id: 3, name: "体能强化班", grade: "4-6年级", capacity: 15, enrolled: 3, duration: "8课时", coach: "张老师", schedule: "每周五 16:30-17:30", qualities: "综合体能、核心力量", detail: "体测专项训练", img: "https://picsum.photos/id/29/60/60" },
+        { id: 5, name: "柔韧瑜伽班", grade: "5-6年级", capacity: 12, enrolled: 1, duration: "8课时", coach: "刘老师", schedule: "每周二、五 16:30-17:20", qualities: "柔韧性、体态", detail: "儿童瑜伽", img: "https://picsum.photos/id/48/60/60" },
         { id: 4, name: "柔韧瑜伽班", grade: "2-4年级", capacity: 12, enrolled: 1, duration: "8课时", coach: "刘老师", schedule: "每周二、五 16:30-17:20", qualities: "柔韧性、体态", detail: "儿童瑜伽", img: "https://picsum.photos/id/48/60/60" }
     ];
 
@@ -785,9 +788,9 @@
         const container = document.getElementById("adviceCardsContainer");
         const a = child.advice;
         container.innerHTML = `
-            <div class="advice-card basic"><img class="advice-img" src="${a.basic.img}"><div class="advice-content"><div class="advice-title">${a.basic.title}</div><div class="advice-desc">${a.basic.desc}</div><ul class="detail-list">${a.basic.details.split('；').map(d=>`<li>• ${d}</li>`).join('')}</ul></div></div>
-            <div class="advice-card advanced"><img class="advice-img" src="${a.advanced.img}"><div class="advice-content"><div class="advice-title">${a.advanced.title}</div><div class="advice-desc">${a.advanced.desc}</div><ul class="detail-list">${a.advanced.details.split('；').map(d=>`<li>• ${d}</li>`).join('')}</ul></div></div>
-            <div class="advice-card warning"><img class="advice-img" src="${a.warning.img}"><div class="advice-content"><div class="advice-title">${a.warning.title}</div><div class="advice-desc">${a.warning.desc}</div><ul class="detail-list">${a.warning.details.split('；').map(d=>`<li>• ${d}</li>`).join('')}</ul></div></div>
+            <div class="advice-card basic"><div class="advice-content"><div class="advice-title">${a.basic.title} — <span class="advice-desc">${a.basic.desc}</span></div><ul class="detail-list">${a.basic.details.split('；').map(d=>`<li>• ${d}</li>`).join('')}</ul></div></div>
+            <div class="advice-card advanced"><div class="advice-content"><div class="advice-title">${a.advanced.title} — <span class="advice-desc">${a.advanced.desc}</span></div><ul class="detail-list">${a.advanced.details.split('；').map(d=>`<li>• ${d}</li>`).join('')}</ul></div></div>
+            <div class="advice-card warning"><div class="advice-content"><div class="advice-title" style="color:#ff8a7a">${a.warning.title} — <span class="advice-desc" style="color:#ff8a7a">${a.warning.desc}</span></div><ul class="detail-list">${a.warning.details.split('；').map(d=>`<li>• ${d}</li>`).join('')}</ul></div></div>
         `;
         document.getElementById("physiqueType").innerHTML = child.type;
         const ctx = document.getElementById('radarChart').getContext('2d');
@@ -966,7 +969,7 @@
                         <div>🎯 ${registeredClass.qualities}</div>
                         <div>📖 ${registeredClass.detail}</div>
                     </div>
-                    <div class="modify-tip">📞 如需调整，请联系体育老师李老师(138****1234)或班主任王老师(139****5678)</div>
+                    <div class="modify-tip">📞 如需调整，请联系体育老师李老师(138****1234)</div>
                 </div>
             `;
         } else {
